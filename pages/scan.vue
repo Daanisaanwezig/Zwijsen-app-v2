@@ -4,13 +4,24 @@ import Button from '~/components/Button.vue';
 
 // Allowed states for state: "scanning", scan-successful, error (defaults to v-else)
 const state = ref()
+const errorMessage = ref('')
 const scaningState = ref('idle');
 const progress = ref(0);
 const video = ref(null);
 const isBusy = ref(false);
 let mediaStream = null;
+const image = ref();
+let intervalId = null;
+
+const imageUrl = computed(() => image.value ? URL.createObjectURL(image.value) : '');
+const buttonBackground = computed(() =>
+    `linear-gradient(to right, var(--color-primary) ${progress.value}%, var(--color-accent) ${progress.value}%)`
+);
 
 onMounted(async () => {
+    mountCamera();
+});
+const mountCamera = async () => {
     try {
         mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
         if (video.value) {
@@ -19,8 +30,9 @@ onMounted(async () => {
     } catch (err) {
         console.error('Could not access camera:', err);
         state.value = 'error';
+        errorMessage.value = 'We konden geen toegang krijgen tot je camera.';
     }
-});
+}
 
 const startScan = async () => {
     if (!video.value) return;
@@ -35,12 +47,16 @@ const startScan = async () => {
     const ctx = canvas.getContext('2d');
     ctx.drawImage(video.value, 0, 0);
     const imageBlob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+    image.value = imageBlob;
 
     // Begin upload
     scaningState.value = 'uploading';
     progress.value = 0;
 
     try {
+        const formData = new FormData();
+        formData.append('file', imageBlob, 'scan.png');
+
         const response = await fetch('/api/uploadToAzure', {
             method: 'POST',
             body: formData
@@ -58,6 +74,7 @@ const startScan = async () => {
     } catch (err) {
         console.error('Error during scan process:', err);
         scaningState.value = 'error';
+        errorMessage.value = 'Er is iets fout gegaan tijdens het uploaden van de afbeelding. Probeer het later opnieuw.'
         state.value = 'error';
     } finally {
         isBusy.value = false;
@@ -73,17 +90,45 @@ const simulateProcessing = () => {
                 progress.value += 10;
             } else {
                 clearInterval(interval);
+                startAutoResetTimer();
                 resolve();
             }
         }, 300);
     });
 };
 
+const startAutoResetTimer = () => {
+    progress.value = 0;
+    intervalId = setInterval(() => {
+        if (progress.value >= 100) {
+            stopAutoResetTimer();
+        } else {
+            // Comment out this value to style the scan complete page
+            progress.value += 1;
+        }
+    }, 50);
+};
+
+const stopAutoResetTimer = () => {
+    if (intervalId) {
+        clearInterval(intervalId);
+    }
+    resetToScanning();
+};
+
+const resetToScanning = () => {
+    image.value = null;
+    state.value = 'scanning';
+    scaningState.value = 'idle'
+    errorMessage.value = ''
+    mountCamera();
+};
+
 state.value = 'scanning'
 </script>
 <template>
+    <Header>Scan</Header>
     <div v-if="state == 'scanning'">
-        <Header>Scan</Header>
         <div class="camera-container">
             <video ref="video" autoplay playsinline></video>
         </div>
@@ -105,10 +150,18 @@ state.value = 'scanning'
 
     </div>
     <div v-else-if="state == 'scan-successful'">
-        <p>Scan scan successful page</p>
+        <img :src="imageUrl" alt="" class="scan-preview">
+        <button class="progress-button" :style="{ background: buttonBackground }" @click="stopAutoResetTimer">
+            Volgende scan
+        </button>
     </div>
-    <div v-else>
-        <p>Error page</p>
+    <div v-else class="scan-error-message">
+        <template v-if="errorMessage != ''">
+            <p>{{ errorMessage }}</p>
+        </template>
+        <template v-else>
+            <p>Er is iets fout gegaan. Probeer het later opnieuw</p>
+        </template>
     </div>
 </template>
 <style lang="scss">
