@@ -3,7 +3,9 @@ import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import Header from '~/components/Header.vue';
 import Button from '~/components/Button.vue';
+import LoadingSpinner from '~/components/LoadingSpinner.vue';
 
+const router = useRouter();
 const state = ref('scanning');
 const errorMessage = ref('');
 const scaningState = ref('idle');
@@ -13,7 +15,6 @@ const isBusy = ref(false);
 let mediaStream = null;
 const image = ref();
 let intervalId = null;
-const router = useRouter();
 
 const imageUrl = computed(() => image.value ? URL.createObjectURL(image.value) : '');
 const buttonBackground = computed(() =>
@@ -128,7 +129,7 @@ const goToScans = () => {
 
 <template>
     <div class="page">
-        <Header :backButton="true" backTo="/">Scan</Header>
+        <Header :backButton="true" backTo="/" :showLogo="true">Scan</Header>
         <div class="page-content">
             <div class="scan-container">
                 <div v-if="state === 'scanning'">
@@ -439,6 +440,15 @@ const goToScans = () => {
         button {
             min-width: 150px;
         }
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
     }
 }
 </style>

@@ -32,7 +32,7 @@ const closeImagePreview = () => {
 
 <template>
     <div class="page">
-        <Header :backButton="true" backTo="/">Scans</Header>
+        <Header :backButton="true" backTo="/" :showLogo="true">Scans</Header>
         <div class="page-content">
             <div class="scans-wrapper">
                 <template v-if="fetchingImages === false">
@@ -51,8 +51,8 @@ const closeImagePreview = () => {
                     </div>
                     <div v-else class="scans-empty">
                         <div class="empty-icon">📷</div>
-                        <h3>Geen scans gevonden</h3>
-                        <p>Je hebt nog geen scans gemaakt.</p>
+                        <h3 class="header__title">Geen scans gevonden</h3>
+                        <p class="body-text">Je hebt nog geen scans gemaakt.</p>
                         <Button 
                             type="primary" 
                             @click="$router.push('/scan')"
@@ -66,8 +66,8 @@ const closeImagePreview = () => {
                     <div class="scans-loading">
                         <template v-if="fetchingImages === 'error'">
                             <div class="error-icon">!</div>
-                            <h3>Fout bij laden</h3>
-                            <p>Er is iets fout gegaan tijdens het laden van de scans.</p>
+                            <h3 class="header__title">Fout bij laden</h3>
+                            <p class="body-text">Er is iets fout gegaan tijdens het laden van de scans.</p>
                             <Button 
                                 type="primary" 
                                 @click="fetchingImages = true; onMounted()"
@@ -77,7 +77,7 @@ const closeImagePreview = () => {
                         </template>
                         <template v-else>
                             <div class="loading-spinner"></div>
-                            <p>Scans aan het laden...</p>
+                            <p class="body-text">Scans aan het laden...</p>
                         </template>
                     </div>
                 </template>
@@ -220,7 +220,10 @@ const closeImagePreview = () => {
 }
 
 @keyframes spin {
-    to {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
         transform: rotate(360deg);
     }
 }

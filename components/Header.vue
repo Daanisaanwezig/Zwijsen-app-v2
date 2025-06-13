@@ -6,7 +6,8 @@ const router = useRouter();
 const props = defineProps<{
   backButton?: boolean;
   centered?: boolean;
-  backTo?: string; // New prop to specify where to navigate back to
+  backTo?: string;
+  showLogo?: boolean;
 }>()
 
 const goBack = () => {
@@ -26,6 +27,9 @@ const goBack = () => {
     <h2 class="header__title">
       <slot />
     </h2>
+    <div v-if="showLogo" class="header__logo-container">
+      <img src="../public/logo.svg" alt="Logo" class="header__logo" />
+    </div>
   </header>
 </template>
 
@@ -40,6 +44,7 @@ const goBack = () => {
   border-bottom: 1px solid var(--md-sys-color-outline);
   position: relative;
   box-shadow: var(--shadow-sm);
+  flex-direction: column;
 
   &--centered {
     justify-content: center;
@@ -48,6 +53,7 @@ const goBack = () => {
   &__back {
     position: absolute;
     left: var(--spacing-md);
+    top: var(--spacing-md);
     background: none;
     border: none;
     color: var(--md-sys-color-primary);
@@ -84,6 +90,15 @@ const goBack = () => {
     font-weight: 600;
     margin: 0;
     color: var(--md-sys-color-primary);
+  }
+  
+  &__logo-container {
+    margin-top: var(--spacing-md);
+  }
+  
+  &__logo {
+    max-width: 120px;
+    height: auto;
   }
 }
 </style>
