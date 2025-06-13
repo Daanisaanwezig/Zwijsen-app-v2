@@ -28,7 +28,6 @@ const goBack = () => {
       <slot />
     </h2>
     <div v-if="showLogo" class="header__logo-container">
-      <img src="../public/logo.svg" alt="Logo" class="header__logo" />
     </div>
   </header>
 </template>
