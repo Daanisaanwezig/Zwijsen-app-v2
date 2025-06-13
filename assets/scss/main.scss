@@ -1,8 +1,100 @@
 :root {
-    --color-primary: #1AB5E5;
-    --color-secondary: #961981;
-    --color-light: #F0F2F5;
-    --color-text: #121717;
-    --color-accent: #638087;
-    --color-border: #F0F2F5;
+    /* Fonts */
+    --font-heading: 'Jua', sans-serif;
+    --font-body: 'Noto Sans', sans-serif;
+
+    /* Typography scale */
+    --md-sys-typescale-title-large-font: var(--font-heading);
+    --md-sys-typescale-body-medium-font: var(--font-body);
+
+    /* Primary colors */
+    --md-sys-color-primary: #01A0E2;
+    --md-sys-color-secondary: #961981;
+    --md-sys-color-surface: #E1F1F5;
+    --md-sys-color-on-primary: #FFFFFF;
+    --md-sys-color-on-secondary: #FFFFFF;
+    --md-sys-color-on-surface: #121717;
+
+    /* Additional colors */
+    --md-sys-color-orange: #EB5A0B;
+    --md-sys-color-yellow: #FFF71D;
+    --md-sys-color-red: #E10413;
+    --md-sys-color-green: #96C31E;
+    --md-sys-color-dark-blue: #0069B3;
+
+    /* Text colors */
+    --text-on-dark: #FFFFFF;
+    --text-on-light: #121717;
+
+    /* Spacing */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+
+    /* Border radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 16px;
+    --radius-pill: 28px;
+
+    /* Outline */
+    --md-sys-color-outline: rgba(0, 0, 0, 0.12);
+}
+
+/* Global styles */
+body {
+    font-family: var(--font-body);
+    color: var(--md-sys-color-on-surface);
+    background-color: var(--md-sys-color-surface);
+    margin: 0;
+    padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-heading);
+    margin-top: 0;
+}
+
+/* Typography classes */
+.title-large {
+    font-family: var(--md-sys-typescale-title-large-font);
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.body-medium {
+    font-family: var(--md-sys-typescale-body-medium-font);
+    font-size: 16px;
+    font-weight: 400;
+}
+
+/* Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-md);
+}
+
+/* Page layout */
+.page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.page-content {
+    flex: 1;
+    padding: var(--spacing-lg);
 }
